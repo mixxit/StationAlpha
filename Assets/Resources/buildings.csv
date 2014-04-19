@@ -1,0 +1,7 @@
+id,type,cost,description,prerequisite,stone,wood,meat,copper,bronze,iron,wheat,hemp,marble,gold,gems,oil,uranium,electricity,gen_credits,gen_stone,gen_wood,gen_meat,gen_copper,gen_bronze,gen_iron,gen_wheat,gen_hemp,gen_marble,gen_gold,gen_gems,gen_oil,gen_uranium,gen_electricity
+1,cave,0,a simple place for shelter,,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+2,decorated cave,0,a simple cave decorated with basic art and maps,maps,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+3,gatherer cave,0,a simple cave for storing gathered materials,simple tools,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0
+4,hunters cave,0,a cave where animals and food are prepared,hunting,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0
+5,monument,0,a marker or place of worship,monument,1000,1000,100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+6,settlement,0,a more enhanced place of community,settlement,2000,2000,500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0

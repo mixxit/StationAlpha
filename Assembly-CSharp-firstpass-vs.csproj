@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{EF2E2E22-08CE-45E8-7C86-7EB701F5515A}</ProjectGuid>
+	<ProjectGuid>{16853695-14BB-65FC-C47A-061F23679F0C}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -56,6 +56,8 @@
      <None Include="Assets\Shaders\Fx\Additive.shader" />
      <None Include="Assets\Shaders\BackgroundAndCharacters\ReflectiveBackgroundArbitrary.shader" />
      <None Include="Assets\Shaders\BackgroundAndCharacters\ReflectiveBackgroundSelfIllumination.shader" />
+     <None Include="Assets\users.xml" />
+     <None Include="Assets\gamexmldata.xml" />
      <None Include="Assets\Resources\HeightDepthOfField.shader" />
      <None Include="Assets\Resources\BlurPassesForDof.shader" />
      <None Include="Assets\Shaders\Fx\ScreenRefract.shader" />
@@ -79,6 +81,7 @@
      <None Include="Assets\Shaders\BackgroundAndCharacters\SuperSimpleSelfIllumination.shader" />
      <None Include="Assets\Shaders\Fx\ParticleBlend.shader" />
      <None Include="Assets\Shaders\Fx\InterlacePatternAdditive.shader" />
+     <None Include="Assets\universe.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

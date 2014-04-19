@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{03AE5A74-2513-A6C3-14C3-8C8FFA3CE7DF}</ProjectGuid>
+	<ProjectGuid>{2430E44A-794A-CC6F-C449-BFFE6BBA42D8}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -56,6 +56,8 @@
      <None Include="Assets\Shaders\Fx\Additive.shader" />
      <None Include="Assets\Shaders\BackgroundAndCharacters\ReflectiveBackgroundArbitrary.shader" />
      <None Include="Assets\Shaders\BackgroundAndCharacters\ReflectiveBackgroundSelfIllumination.shader" />
+     <None Include="Assets\users.xml" />
+     <None Include="Assets\gamexmldata.xml" />
      <None Include="Assets\Resources\HeightDepthOfField.shader" />
      <None Include="Assets\Resources\BlurPassesForDof.shader" />
      <None Include="Assets\Shaders\Fx\ScreenRefract.shader" />
@@ -79,6 +81,7 @@
      <None Include="Assets\Shaders\BackgroundAndCharacters\SuperSimpleSelfIllumination.shader" />
      <None Include="Assets\Shaders\Fx\ParticleBlend.shader" />
      <None Include="Assets\Shaders\Fx\InterlacePatternAdditive.shader" />
+     <None Include="Assets\universe.xml" />
  <Reference Include="UnityEditor.Graphs">
  <HintPath>D:\dev\unity4.3.4f1\Data\Managed\UnityEditor.Graphs.dll</HintPath>
  </Reference>
@@ -100,11 +103,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{EF2E2E22-08CE-45E8-7C86-7EB701F5515A}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
+      <Project>{16853695-14BB-65FC-C47A-061F23679F0C}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{39A5C6E7-72B9-ACEE-BB06-DC9252421F12}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
+      <Project>{D91AE4AE-BC51-B6A6-C9C1-0517A944DB84}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-UnityScript.unityproj">
-      <Project>{AD23DAC8-2486-B74B-1DD2-DF30867095EA}</Project>      <Name>Assembly-UnityScript</Name>    </ProjectReference>
+      <Project>{2734BD7D-F6C2-0DDA-AB22-6543FD2FCDF8}</Project>      <Name>Assembly-UnityScript</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

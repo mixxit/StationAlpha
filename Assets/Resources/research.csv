@@ -1,0 +1,39 @@
+id,type,cost,researchedfrom,prerequisite_research,tickstocomplete,description
+1,simple tools,0,cave,,10,turning of stone into simple tools
+2,hunting,0,cave,simple tools,10,the hunting of animals
+3,fire,0,cave,simple tools,10,creating fire from simple materials
+4,cooking,0,cave,fire,10,heating meats for warm food
+5,ceramics,0,cave,fire,10,creating simple vessels
+6,cave painting,0,cave,simple tools,10,decorating walls 
+7,communication,0,cave,cave painting,10,simple form of communication
+8,maps,0,cave,cave art,10,creating simple maps of stars and places
+9,microliths,0,cave,simple tools,10,manufacture of small simple tools
+10,music,0,cave,microliths,10,creation of simple flutes
+11,tents,0,cave,simple tools,10,creation of simple tent structures for shelter
+12,clothing,0,cave,microliths,10,clothing from skinning and simple tools
+13,spears and slings,0,cave,microliths,10,simple long range attack weaponry
+14,simple boats,0,cave,microliths,10,simple boats for traversing water bodies
+15,burial,0,cave,hunting,10,place for family and friends to gather for support and to reminisce
+16,monument,0,cave,burial,10,a simple religious structure or marker
+17,settlement,0,cave,monument,10,a more enhanced place of community
+18,agriculture,0,settlement,,10,"cultivation of animals, plants, fungi, and other life forms for food"
+19,animal husbandry,0,settlement,,10,management and care of tamed animals
+20,plough,0,settlement,agriculture,10,a tool for cultivating soil
+21,cuniform,0,settlement,,10,a simple form of writing
+22,currency,0,settlement,cuniform,10,a simple form of currency or receipt of goods
+23,briquetage ,100,settlement,,10,boiling of sea water to extract salt
+24,artificial refrigeration,100,settlement,briquetage ,10,the use of salt for preservation of meat
+25,roads,100,settlement,briquetage ,10,the salting of land to create roads
+26,smelting,100,settlement,,10,a form of metallurgy for turning ore into metal
+27,copper tools,100,settlement,smelting,10,soft metal tools
+28,copper weapons,100,settlement,copper tools,10,soft metal weapons
+29,jewelry,100,settlement,copper tools,10,simple metal charms and talismans
+30,bronze tools,100,settlement,copper tools,10,metal tools
+31,bronze weapons,100,settlement,bronze tools,10,metal weapons
+32,iron tools,100,settlement,bronze tools,10,strong metal tools
+33,wheel,100,settlement,animal husbandry,10,a tool used for easier movement of objects
+34,chariot,100,settlement,wheel,10,a cart used in conjunction with animals
+35,alphabeht,100,settlement,cuniform,10,a way to record thoughts and speech for others to read
+36,iron weapons,100,settlement,iron tools,10,strong weapons
+37,water wheel,100,settlement,wheel,10,a wheel moved by the force of moving water
+38,clockwork,100,settlement,iron tools,10,a mechanism for automation

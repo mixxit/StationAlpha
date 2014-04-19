@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{39A5C6E7-72B9-ACEE-BB06-DC9252421F12}</ProjectGuid>
+	<ProjectGuid>{D91AE4AE-BC51-B6A6-C9C1-0517A944DB84}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -52,6 +52,11 @@
      <Compile Include="Assets\Scripts\Fx\GlowPlaneOrient.cs" />
      <Compile Include="Assets\Scripts\Fx\MouseHighlight.cs" />
      <Compile Include="Assets\Scripts\Fx\ReflectionFx.cs" />
+     <Compile Include="Assets\Scripts\Managers\Client.cs" />
+     <Compile Include="Assets\Scripts\Managers\NetworkObject.cs" />
+     <Compile Include="Assets\Scripts\Managers\Server.cs" />
+     <Compile Include="Assets\Scripts\Managers\Task.cs" />
+     <Compile Include="Assets\Scripts\Managers\User.cs" />
      <Compile Include="Assets\Scripts\Misc\DemoControl.cs" />
      <Compile Include="Assets\Scripts\Misc\GameOverGUI.cs" />
      <Compile Include="Assets\Scripts\Misc\InitLevelManager.cs" />
@@ -66,6 +71,8 @@
      <None Include="Assets\Shaders\Fx\Additive.shader" />
      <None Include="Assets\Shaders\BackgroundAndCharacters\ReflectiveBackgroundArbitrary.shader" />
      <None Include="Assets\Shaders\BackgroundAndCharacters\ReflectiveBackgroundSelfIllumination.shader" />
+     <None Include="Assets\users.xml" />
+     <None Include="Assets\gamexmldata.xml" />
      <None Include="Assets\Resources\HeightDepthOfField.shader" />
      <None Include="Assets\Resources\BlurPassesForDof.shader" />
      <None Include="Assets\Shaders\Fx\ScreenRefract.shader" />
@@ -89,10 +96,11 @@
      <None Include="Assets\Shaders\BackgroundAndCharacters\SuperSimpleSelfIllumination.shader" />
      <None Include="Assets\Shaders\Fx\ParticleBlend.shader" />
      <None Include="Assets\Shaders\Fx\InterlacePatternAdditive.shader" />
+     <None Include="Assets\universe.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass-vs.csproj">
-      <Project>{EF2E2E22-08CE-45E8-7C86-7EB701F5515A}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
+      <Project>{16853695-14BB-65FC-C47A-061F23679F0C}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
