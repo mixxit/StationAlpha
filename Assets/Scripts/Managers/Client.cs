@@ -59,7 +59,7 @@ public class Client : MonoBehaviour {
 						GUI.skin = customSkin;
 						GUI.skin.button.wordWrap = true;
 		
-						GUI.DrawTexture (new Rect (0, 0, Screen.width, Screen.height), BgImgFile);
+						//GUI.DrawTexture (new Rect (0, 0, Screen.width, Screen.height), BgImgFile);
 						windRect = GUILayout.Window (0, windRect, None, "test");
 		
 						if (popup) {
@@ -135,14 +135,10 @@ public class Client : MonoBehaviour {
 	{
 		currentForm = null;
 		playmode = true;
-		SpawnPlayer ();
+		networkObject.networkView.RPC ("playmode", RPCMode.All, playerPrefab.networkView.viewID);
+		BroadcastMessage ("BecomeDocile", false);
+		//SpawnPlayer ();
 
-	}
-
-	private void SpawnPlayer()
-	{
-		player = Network.Instantiate(playerPrefab, spawnPoint.transform.position, Quaternion.identity, 0);
-		
 	}
 
 	void popupMessage(string arg1,string arg2)
@@ -273,8 +269,9 @@ public class Client : MonoBehaviour {
 	void InitalizeNetworkObject()
 	{
 		setInitLog ("Initializing NetworkObject...");
-		networkObject = (GameObject)Network.Instantiate (networkObjectMaster,transform.position, transform.rotation, 0);
-		
+		networkObject = (GameObject)Network.Instantiate (networkObjectMaster,spawnPoint.transform.position, spawnPoint.transform.rotation, 0);
+		networkObject.networkView.RPC ("nonplaymode", RPCMode.All, networkObject.networkView.viewID);
+		BroadcastMessage ("BecomeDocile",true);
 	}
 	
 	void NetworkObjectMessage(string message)

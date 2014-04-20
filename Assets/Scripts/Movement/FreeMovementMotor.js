@@ -10,25 +10,29 @@ class FreeMovementMotor extends MovementMotor {
 	public var turningSmoothing : float = 0.3;
 	
 	function FixedUpdate () {
-		// Handle the movement of the character
-		var targetVelocity : Vector3 = movementDirection * walkingSpeed;
-		var deltaVelocity : Vector3 = targetVelocity - rigidbody.velocity;
-		if (rigidbody.useGravity)
-			deltaVelocity.y = 0;
-		rigidbody.AddForce (deltaVelocity * walkingSnappyness, ForceMode.Acceleration);
-		
-		// Setup player to face facingDirection, or if that is zero, then the movementDirection
-		var faceDir : Vector3 = facingDirection;
-		if (faceDir == Vector3.zero)
-			faceDir = movementDirection;
-		
-		// Make the character rotate towards the target rotation
-		if (faceDir == Vector3.zero) {
-			rigidbody.angularVelocity = Vector3.zero;
-		}
-		else {
-			var rotationAngle : float = AngleAroundAxis (transform.forward, faceDir, Vector3.up);
-			rigidbody.angularVelocity = (Vector3.up * rotationAngle * turningSmoothing);
+		if (networkView.isMine)
+		{
+			
+			// Handle the movement of the character
+			var targetVelocity : Vector3 = movementDirection * walkingSpeed;
+			var deltaVelocity : Vector3 = targetVelocity - rigidbody.velocity;
+			if (rigidbody.useGravity)
+				deltaVelocity.y = 0;
+			rigidbody.AddForce (deltaVelocity * walkingSnappyness, ForceMode.Acceleration);
+			
+			// Setup player to face facingDirection, or if that is zero, then the movementDirection
+			var faceDir : Vector3 = facingDirection;
+			if (faceDir == Vector3.zero)
+				faceDir = movementDirection;
+			
+			// Make the character rotate towards the target rotation
+			if (faceDir == Vector3.zero) {
+				rigidbody.angularVelocity = Vector3.zero;
+			}
+			else {
+				var rotationAngle : float = AngleAroundAxis (transform.forward, faceDir, Vector3.up);
+				rigidbody.angularVelocity = (Vector3.up * rotationAngle * turningSmoothing);
+			}
 		}
 	}
 	

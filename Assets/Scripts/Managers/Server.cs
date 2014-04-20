@@ -14,6 +14,7 @@ public class Server : MonoBehaviour
 	public int networkversion;
 	private string initLog = "Initializing...";
 
+	public GameObject spawnPoint;
 
 	// max online players determined by above and initialized in start
 	int maxonlineplayers = 50;
@@ -467,9 +468,9 @@ public class Server : MonoBehaviour
 	void InitalizeNetworkObject()
 	{   
 		setInitLog("Initializing NetworkObject...");
-		networkObject = (GameObject)Network.Instantiate(networkObjectMaster, transform.position, transform.rotation, 0);
-		
-		
+		networkObject = (GameObject)Network.Instantiate(networkObjectMaster, spawnPoint.transform.position, spawnPoint.transform.rotation, 0);
+		networkObject.networkView.RPC ("nonplaymode", RPCMode.All, networkObject.networkView.viewID);
+		BroadcastMessage ("BecomeDocile", true);
 	}
 	
 	void InitializeServer()

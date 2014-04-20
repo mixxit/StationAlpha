@@ -40,82 +40,94 @@ private var screenMovementForward : Vector3;
 private var screenMovementRight : Vector3;
 
 function Awake () {		
-	motor.movementDirection = Vector2.zero;
-	motor.facingDirection = Vector2.zero;
-	
-	// Set main camera
-	mainCamera = Camera.main;
-	mainCameraTransform = mainCamera.transform;
-	
-	// Ensure we have character set
-	// Default to using the transform this component is on
-	if (!character)
-		character = transform;
-	
-	initOffsetToPlayer = mainCameraTransform.position - character.position;
-	
-	#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
-		if (joystickPrefab) {
-			// Create left joystick
-			var joystickLeftGO : GameObject = Instantiate (joystickPrefab) as GameObject;
-			joystickLeftGO.name = "Joystick Left";
-			joystickLeft = joystickLeftGO.GetComponent.<Joystick> ();
-			
-			// Create right joystick
-			joystickRightGO = Instantiate (joystickPrefab) as GameObject;
-			joystickRightGO.name = "Joystick Right";
-			joystickRight = joystickRightGO.GetComponent.<Joystick> ();			
-		}
-	#elif !UNITY_FLASH
-		if (cursorPrefab) {
-			cursorObject = (Instantiate (cursorPrefab) as GameObject).transform;
-		}
-	#endif
-	
-	// Save camera offset so we can use it in the first frame
-	cameraOffset = mainCameraTransform.position - character.position;
-	
-	// Set the initial cursor position to the center of the screen
-	cursorScreenPosition = Vector3 (0.5 * Screen.width, 0.5 * Screen.height, 0);
-	
-	// caching movement plane
-	playerMovementPlane = new Plane (character.up, character.position + character.up * cursorPlaneHeight);
+	if (networkView.isMine)
+	{
+		motor.movementDirection = Vector2.zero;
+		motor.facingDirection = Vector2.zero;
+		
+		// Set main camera
+		mainCamera = Camera.main;
+		mainCameraTransform = mainCamera.transform;
+		
+		// Ensure we have character set
+		// Default to using the transform this component is on
+		if (!character)
+			character = transform;
+		
+		initOffsetToPlayer = mainCameraTransform.position - character.position;
+		
+		#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
+			if (joystickPrefab) {
+				// Create left joystick
+				var joystickLeftGO : GameObject = Instantiate (joystickPrefab) as GameObject;
+				joystickLeftGO.name = "Joystick Left";
+				joystickLeft = joystickLeftGO.GetComponent.<Joystick> ();
+				
+				// Create right joystick
+				joystickRightGO = Instantiate (joystickPrefab) as GameObject;
+				joystickRightGO.name = "Joystick Right";
+				joystickRight = joystickRightGO.GetComponent.<Joystick> ();			
+			}
+		#elif !UNITY_FLASH
+			if (cursorPrefab) {
+				cursorObject = (Instantiate (cursorPrefab) as GameObject).transform;
+			}
+		#endif
+		
+		// Save camera offset so we can use it in the first frame
+		cameraOffset = mainCameraTransform.position - character.position;
+		
+		// Set the initial cursor position to the center of the screen
+		cursorScreenPosition = Vector3 (0.5 * Screen.width, 0.5 * Screen.height, 0);
+		
+		// caching movement plane
+		playerMovementPlane = new Plane (character.up, character.position + character.up * cursorPlaneHeight);
+	}
 }
 
 function Start () {
-	#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
-		// Move to right side of screen
-		var guiTex : GUITexture = joystickRightGO.GetComponent.<GUITexture> ();
-		guiTex.pixelInset.x = Screen.width - guiTex.pixelInset.x - guiTex.pixelInset.width;			
-	#endif	
-	
-	// it's fine to calculate this on Start () as the camera is static in rotation
-	
-	screenMovementSpace = Quaternion.Euler (0, mainCameraTransform.eulerAngles.y, 0);
-	screenMovementForward = screenMovementSpace * Vector3.forward;
-	screenMovementRight = screenMovementSpace * Vector3.right;	
+	if (networkView.isMine)
+	{
+		#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
+			// Move to right side of screen
+			var guiTex : GUITexture = joystickRightGO.GetComponent.<GUITexture> ();
+			guiTex.pixelInset.x = Screen.width - guiTex.pixelInset.x - guiTex.pixelInset.width;			
+		#endif	
+		
+		// it's fine to calculate this on Start () as the camera is static in rotation
+		
+		screenMovementSpace = Quaternion.Euler (0, mainCameraTransform.eulerAngles.y, 0);
+		screenMovementForward = screenMovementSpace * Vector3.forward;
+		screenMovementRight = screenMovementSpace * Vector3.right;	
+	}
 }
 
+
 function OnDisable () {
-	if (joystickLeft) 
-		joystickLeft.enabled = false;
-	
-	if (joystickRight)
-		joystickRight.enabled = false;
+	if (networkView.isMine)
+	{
+		if (joystickLeft) 
+			joystickLeft.enabled = false;
+		
+		if (joystickRight)
+			joystickRight.enabled = false;
+	}
 }
 
 function OnEnable () {
-	if (joystickLeft) 
-		joystickLeft.enabled = true;
-	
-	if (joystickRight)
-		joystickRight.enabled = true;
+	if (networkView.isMine)
+	{
+		if (joystickLeft) 
+			joystickLeft.enabled = true;
+		
+		if (joystickRight)
+			joystickRight.enabled = true;
+	}
 }
 
 function Update () {
 	if (networkView.isMine)
-    {
-        
+	{
 		// HANDLE CHARACTER MOVEMENT DIRECTION
 		#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
 			motor.movementDirection = joystickLeft.position.x * screenMovementRight + joystickLeft.position.y * screenMovementForward;
@@ -224,53 +236,56 @@ public static function ScreenPointToWorldPointOnPlane (screenPoint : Vector3, pl
 }
 
 function HandleCursorAlignment (cursorWorldPosition : Vector3) {
-	if (!cursorObject)
-		return;
-	
-	// HANDLE CURSOR POSITION
-	
-	// Set the position of the cursor object
-	cursorObject.position = cursorWorldPosition;
-	
-	#if !UNITY_FLASH
-		// Hide mouse cursor when within screen area, since we're showing game cursor instead
-		Screen.showCursor = (Input.mousePosition.x < 0 || Input.mousePosition.x > Screen.width || Input.mousePosition.y < 0 || Input.mousePosition.y > Screen.height);
-	#endif
-	
-	
-	// HANDLE CURSOR ROTATION
-	
-	var cursorWorldRotation : Quaternion = cursorObject.rotation;
-	if (motor.facingDirection != Vector3.zero)
-		cursorWorldRotation = Quaternion.LookRotation (motor.facingDirection);
-	
-	// Calculate cursor billboard rotation
-	var cursorScreenspaceDirection : Vector3 = Input.mousePosition - mainCamera.WorldToScreenPoint (transform.position + character.up * cursorPlaneHeight);
-	cursorScreenspaceDirection.z = 0;
-	var cursorBillboardRotation : Quaternion = mainCameraTransform.rotation * Quaternion.LookRotation (cursorScreenspaceDirection, -Vector3.forward);
-	
-	// Set cursor rotation
-	cursorObject.rotation = Quaternion.Slerp (cursorWorldRotation, cursorBillboardRotation, cursorFacingCamera);
-	
-	
-	// HANDLE CURSOR SCALING
-	
-	// The cursor is placed in the world so it gets smaller with perspective.
-	// Scale it by the inverse of the distance to the camera plane to compensate for that.
-	var compensatedScale : float = 0.1 * Vector3.Dot (cursorWorldPosition - mainCameraTransform.position, mainCameraTransform.forward);
-	
-	// Make the cursor smaller when close to character
-	var cursorScaleMultiplier : float = Mathf.Lerp (0.7, 1.0, Mathf.InverseLerp (0.5, 4.0, motor.facingDirection.magnitude));
-	
-	// Set the scale of the cursor
-	cursorObject.localScale = Vector3.one * Mathf.Lerp (compensatedScale, 1, cursorSmallerWithDistance) * cursorScaleMultiplier;
-	
-	// DEBUG - REMOVE LATER
-	if (Input.GetKey(KeyCode.O)) cursorFacingCamera += Time.deltaTime * 0.5;
-	if (Input.GetKey(KeyCode.P)) cursorFacingCamera -= Time.deltaTime * 0.5;
-	cursorFacingCamera = Mathf.Clamp01(cursorFacingCamera);
-	
-	if (Input.GetKey(KeyCode.K)) cursorSmallerWithDistance += Time.deltaTime * 0.5;
-	if (Input.GetKey(KeyCode.L)) cursorSmallerWithDistance -= Time.deltaTime * 0.5;
-	cursorSmallerWithDistance = Mathf.Clamp01(cursorSmallerWithDistance);
+	if (networkView.isMine)
+	{
+		if (!cursorObject)
+			return;
+		
+		// HANDLE CURSOR POSITION
+		
+		// Set the position of the cursor object
+		cursorObject.position = cursorWorldPosition;
+		
+		#if !UNITY_FLASH
+			// Hide mouse cursor when within screen area, since we're showing game cursor instead
+			Screen.showCursor = (Input.mousePosition.x < 0 || Input.mousePosition.x > Screen.width || Input.mousePosition.y < 0 || Input.mousePosition.y > Screen.height);
+		#endif
+		
+		
+		// HANDLE CURSOR ROTATION
+
+		var cursorWorldRotation : Quaternion = cursorObject.rotation;
+		if (motor.facingDirection != Vector3.zero)
+			cursorWorldRotation = Quaternion.LookRotation (motor.facingDirection);
+		
+		// Calculate cursor billboard rotation
+		var cursorScreenspaceDirection : Vector3 = Input.mousePosition - mainCamera.WorldToScreenPoint (transform.position + character.up * cursorPlaneHeight);
+		cursorScreenspaceDirection.z = 0;
+		var cursorBillboardRotation : Quaternion = mainCameraTransform.rotation * Quaternion.LookRotation (cursorScreenspaceDirection, -Vector3.forward);
+		
+		// Set cursor rotation
+		cursorObject.rotation = Quaternion.Slerp (cursorWorldRotation, cursorBillboardRotation, cursorFacingCamera);
+		
+		
+		// HANDLE CURSOR SCALING
+		
+		// The cursor is placed in the world so it gets smaller with perspective.
+		// Scale it by the inverse of the distance to the camera plane to compensate for that.
+		var compensatedScale : float = 0.1 * Vector3.Dot (cursorWorldPosition - mainCameraTransform.position, mainCameraTransform.forward);
+		
+		// Make the cursor smaller when close to character
+		var cursorScaleMultiplier : float = Mathf.Lerp (0.7, 1.0, Mathf.InverseLerp (0.5, 4.0, motor.facingDirection.magnitude));
+		
+		// Set the scale of the cursor
+		cursorObject.localScale = Vector3.one * Mathf.Lerp (compensatedScale, 1, cursorSmallerWithDistance) * cursorScaleMultiplier;
+		
+		// DEBUG - REMOVE LATER
+		if (Input.GetKey(KeyCode.O)) cursorFacingCamera += Time.deltaTime * 0.5;
+		if (Input.GetKey(KeyCode.P)) cursorFacingCamera -= Time.deltaTime * 0.5;
+		cursorFacingCamera = Mathf.Clamp01(cursorFacingCamera);
+		
+		if (Input.GetKey(KeyCode.K)) cursorSmallerWithDistance += Time.deltaTime * 0.5;
+		if (Input.GetKey(KeyCode.L)) cursorSmallerWithDistance -= Time.deltaTime * 0.5;
+		cursorSmallerWithDistance = Mathf.Clamp01(cursorSmallerWithDistance);
+	}
 }
