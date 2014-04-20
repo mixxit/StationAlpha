@@ -87,15 +87,15 @@ public class Client : MonoBehaviour {
 	{
 		switch (command)
 		{
-		case "popup":
-			popupMessage(arg1, arg2);
-			break;
-		case "showscreen":
-			showScreen(arg1, arg2);
-			break;
-		default:
-			setInitLog("ERROR_INVALIDCOMMAND: Received " + command + " request: (" + arg1 + ") (" + arg2 + ")");
-			break;
+			case "popup":
+				popupMessage(arg1, arg2);
+				break;
+			case "showscreen":
+				showScreen(arg1, arg2);
+				break;
+			default:
+				setInitLog("ERROR_INVALIDCOMMAND: Received " + command + " request: (" + arg1 + ") (" + arg2 + ")");
+				break;
 		}
 	}
 	
@@ -119,7 +119,7 @@ public class Client : MonoBehaviour {
 					
 					User userData = new User(username,password,x,y,z,s,credits,rank);
 					this.formUserCache = userData;
-					CloseLoginAndStartGame();
+					CloseLoginAndStartGame(username, int.Parse (rank));
 
 
 					break;
@@ -131,11 +131,13 @@ public class Client : MonoBehaviour {
 		}
 	}
 
-	void CloseLoginAndStartGame()
+	void CloseLoginAndStartGame(string username, int rank)
 	{
 		currentForm = null;
 		playmode = true;
-		networkObject.networkView.RPC ("playmode", RPCMode.All, playerPrefab.networkView.viewID);
+		networkObject.networkView.RPC ("syncState", RPCMode.All, playerPrefab.networkView.viewID, 1);
+
+		BroadcastMessage ("SetRank", rank);
 		BroadcastMessage ("BecomeDocile", false);
 		//SpawnPlayer ();
 
@@ -270,7 +272,7 @@ public class Client : MonoBehaviour {
 	{
 		setInitLog ("Initializing NetworkObject...");
 		networkObject = (GameObject)Network.Instantiate (networkObjectMaster,spawnPoint.transform.position, spawnPoint.transform.rotation, 0);
-		networkObject.networkView.RPC ("nonplaymode", RPCMode.All, networkObject.networkView.viewID);
+		networkObject.networkView.RPC ("syncState", RPCMode.All, networkObject.networkView.viewID, 0);
 		BroadcastMessage ("BecomeDocile",true);
 	}
 	

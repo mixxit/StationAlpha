@@ -379,24 +379,36 @@ public class Server : MonoBehaviour
 		return username;
 	}
 
+	int getNextAvailableRank()
+	{
+		int newrank = dbUsers.Count + 1;
+		return newrank;
+	}
+
 	void processRegister(GameObject sender, string username, string password)
 	{
 		setInitLog("Registering User (" + username + ") (" + password + ")");
-		
-		if (!dbUsers.ContainsKey(username))
-		{
-			setInitLog("Register free (" + username + ")");
-			
-			User user = new User(username, password, "0", "0", "0", "0", "0", "0");
-			this.dbUsers.Add(username, user);
-			setInitLog("Writing database for new user (" + username + ")");
-			WriteToXml();   
-			SendCmd(sender, "popup", "info", "registered");
-			
-		} else
-		{
-			setInitLog("ERR_REGISTER_USEREXISTS: Error user exists during register: (" + username + ")");
-			SendCmd(sender, "popup", "error", "that username is already in use");
+
+		int currentplayercount = dbUsers.Count;
+		if (dbUsers.Count >= maxonlineplayers) {
+			setInitLog("ERR_REGISTER_FULLSERVER: Error server is full during register: (" + username + ")");
+			SendCmd(sender, "popup", "error", "the server is already at its player limit");
+		} else {
+			if (!dbUsers.ContainsKey (username)) {
+				setInitLog ("Register free (" + username + ")");
+				
+				int nextrank = getNextAvailableRank ();
+				
+				User user = new User (username, password, "0", "0", "0", "0", "0", nextrank.ToString ());
+				this.dbUsers.Add (username, user);
+				setInitLog ("Writing database for new user (" + username + ")");
+				WriteToXml ();   
+				SendCmd (sender, "popup", "info", "registered");
+				
+			} else {
+				setInitLog ("ERR_REGISTER_USEREXISTS: Error all crew have been filled: (" + username + ")");
+				SendCmd (sender, "popup", "error", "Server Full, try another (no crew free)");
+			}
 		}
 	}
 	
@@ -469,7 +481,7 @@ public class Server : MonoBehaviour
 	{   
 		setInitLog("Initializing NetworkObject...");
 		networkObject = (GameObject)Network.Instantiate(networkObjectMaster, spawnPoint.transform.position, spawnPoint.transform.rotation, 0);
-		networkObject.networkView.RPC ("nonplaymode", RPCMode.All, networkObject.networkView.viewID);
+		networkObject.networkView.RPC ("syncState", RPCMode.All, networkObject.networkView.viewID, 0);
 		BroadcastMessage ("BecomeDocile", true);
 	}
 	
