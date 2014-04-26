@@ -152,7 +152,6 @@
      <None Include="Assets\Shaders\BackgroundAndCharacters\ReflectiveBackgroundArbitrary.shader" />
      <None Include="Assets\Shaders\BackgroundAndCharacters\ReflectiveBackgroundSelfIllumination.shader" />
      <None Include="Assets\users.xml" />
-     <None Include="Assets\gamexmldata.xml" />
      <None Include="Assets\Resources\HeightDepthOfField.shader" />
      <None Include="Assets\Resources\BlurPassesForDof.shader" />
      <None Include="Assets\Shaders\Fx\ScreenRefract.shader" />
@@ -176,7 +175,6 @@
      <None Include="Assets\Shaders\BackgroundAndCharacters\SuperSimpleSelfIllumination.shader" />
      <None Include="Assets\Shaders\Fx\ParticleBlend.shader" />
      <None Include="Assets\Shaders\Fx\InterlacePatternAdditive.shader" />
-     <None Include="Assets\universe.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass-vs.csproj">

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -13,6 +13,7 @@ public class Server : MonoBehaviour
 	public Vector2 scrollPosition;
 	public int networkversion;
 	private string initLog = "Initializing...";
+	public int oxygen = 100;
 
 	public GameObject spawnPoint;
 
@@ -102,9 +103,24 @@ public class Server : MonoBehaviour
 			count++;
 		}
 		//setInitLog(count + " tasks processed and removed");
+		//syncClientsCache();
 		
 	}
-	
+
+	void syncClientsCache()
+	{
+		foreach (NetworkPlayer np in Network.connections) 
+		{
+			if (playerIdList.ContainsKey (np.guid))
+			{
+				//todo
+				string usercache = "";
+				string scenecache = "";
+				//SendCmd (np, "synccache", usercache,scenecache);
+			}
+		}
+	}
+
 	void processTask(Task task)
 	{
 		switch (task.getTaskname())
@@ -165,14 +181,18 @@ public class Server : MonoBehaviour
 			elmUser.SetAttribute("username", user.getUsername());
 			//setInitLog("Saving " + user.getUsername());
 			elmUser.SetAttribute("password", user.getPassword());
-			elmUser.SetAttribute("credits", user.getCredits());
-			elmUser.SetAttribute("x", user.getX());
-			elmUser.SetAttribute("y", user.getY());
-			elmUser.SetAttribute("z", user.getZ());
-			elmUser.SetAttribute("s", user.getS());
-			elmUser.SetAttribute("rank", user.getRank());
-			
-			
+			elmUser.SetAttribute("credits", user.getCredits().ToString ());
+			elmUser.SetAttribute("x", user.getX().ToString ());
+			elmUser.SetAttribute("y", user.getY().ToString ());
+			elmUser.SetAttribute("z", user.getZ().ToString ());
+			elmUser.SetAttribute("s", user.getS().ToString ());
+			elmUser.SetAttribute("character", user.getCharacter().ToString ());
+			elmUser.SetAttribute("oxygen", user.getOxygen().ToString ());
+			elmUser.SetAttribute("health", user.getHealth().ToString ());
+			elmUser.SetAttribute("food", user.getFood().ToString ());
+			elmUser.SetAttribute("drink", user.getDrink().ToString ());
+			elmUser.SetAttribute("role", user.getRole().ToString ());
+
 			elmUsers.AppendChild(elmUser); // make the node the parent.
 			//setInitLog ("Wrote user " + user.getUsername());
 		}
@@ -200,13 +220,19 @@ public class Server : MonoBehaviour
 					{
 						string username = userItems.Attributes ["username"].Value;
 						string password = userItems.Attributes ["password"].Value;
-						string credits = userItems.Attributes ["credits"].Value;
-						string x = userItems.Attributes ["x"].Value;
-						string y = userItems.Attributes ["y"].Value;
-						string z = userItems.Attributes ["z"].Value;
-						string s = userItems.Attributes ["s"].Value;
-						string rank = userItems.Attributes ["rank"].Value;
-						User user = new User(username, password, x, y, z, s, credits, rank);
+						int credits = int.Parse (userItems.Attributes ["credits"].Value);
+						int x = int.Parse (userItems.Attributes ["x"].Value);
+						int y = int.Parse (userItems.Attributes ["y"].Value);
+						int z = int.Parse (userItems.Attributes ["z"].Value);
+						int s = int.Parse (userItems.Attributes ["s"].Value);
+						int character = int.Parse (userItems.Attributes ["character"].Value);
+						int oxygen = int.Parse (userItems.Attributes ["oxygen"].Value);
+						int health = int.Parse (userItems.Attributes ["health"].Value);
+						int food = int.Parse (userItems.Attributes ["food"].Value);
+						int drink = int.Parse (userItems.Attributes ["drink"].Value);
+						int role = int.Parse (userItems.Attributes ["role"].Value);
+
+						User user = new User(username, password, x, y, z, s, credits, character, oxygen, health, food, drink, role);
 						dbUsers.Add(username, user);
 						setInitLog("Loaded user: " + user.getUsername());
 					}
@@ -309,7 +335,7 @@ public class Server : MonoBehaviour
 	void setUserCredits(string username, int newcredits)
 	{
 		User user = getUserFromUsername(username);
-		user.setCredits(newcredits.ToString());
+		user.setCredits(newcredits);
 		WriteToXml();
 		
 	}
@@ -319,7 +345,7 @@ public class Server : MonoBehaviour
 		User user = getUserFromUsername(username);
 		if (user != null)
 		{
-			return int.Parse(user.getCredits());
+			return user.getCredits();
 		} else
 		{
 			return 0;
@@ -354,22 +380,33 @@ public class Server : MonoBehaviour
 		User user = getUserFromUsername(username);
 		if (user != null)
 		{
-			string x = user.getX();
-			string y = user.getY();
-			string z = user.getZ();
-			string s = user.getS();
-			string credits = user.getCredits();
-			string rank = user.getRank();
-			
+			int x = user.getX();
+			int y = user.getY();
+			int z = user.getZ();
+			int s = user.getS();
+
+			int credits = user.getCredits();
+			int character = user.getCharacter();
+
+			int oxygen = user.getOxygen();
+			int health = user.getHealth();
+			int food = user.getFood();
+			int drink = user.getDrink();
+			int role = user.getRole();
+
 			playdata = username + "," +
-				x + "," + 
-					y + "," +
-					z + "," +
-					s + "," +
-					credits + "," +
-					rank;
+				x.ToString() + "," + 
+				y.ToString() + "," +
+				z.ToString() + "," +
+				s.ToString() + "," +
+				credits.ToString()+ "," +
+				character.ToString() + "," +
+				oxygen.ToString() + "," +
+				health.ToString() + "," +
+				food.ToString() + "," +
+				drink.ToString() + "," +
+				role.ToString();
 		}
-		
 		return playdata;
 	}
 	
@@ -379,10 +416,16 @@ public class Server : MonoBehaviour
 		return username;
 	}
 
-	int getNextAvailableRank()
+	string getUsernameFromNetworkPlayer(NetworkPlayer networkPlayer)
 	{
-		int newrank = dbUsers.Count + 1;
-		return newrank;
+		string username = getUsernameFromGuid(networkPlayer.guid);
+		return username;
+	}
+
+	int getNextAvailableCharacter()
+	{
+		int newcharacter = dbUsers.Count + 1;
+		return newcharacter;
 	}
 
 	void processRegister(GameObject sender, string username, string password)
@@ -396,10 +439,8 @@ public class Server : MonoBehaviour
 		} else {
 			if (!dbUsers.ContainsKey (username)) {
 				setInitLog ("Register free (" + username + ")");
-				
-				int nextrank = getNextAvailableRank ();
-				
-				User user = new User (username, password, "0", "0", "0", "0", "0", nextrank.ToString ());
+				int nextcharacterid = getNextAvailableCharacter ();
+				User user = new User (username, password, 0, 0, 0, 0, 0, nextcharacterid, 100, 100, 100, 100, 0);
 				this.dbUsers.Add (username, user);
 				setInitLog ("Writing database for new user (" + username + ")");
 				WriteToXml ();   
@@ -422,6 +463,12 @@ public class Server : MonoBehaviour
 			return false;
 		}
 	}
+
+	void setPlayerPlaymode(string username, bool mode)
+	{
+		dbUsers [username].setPlaymode (mode);
+	}
+
 	
 	void processAuth(GameObject sender, string username, string password)
 	{
@@ -436,7 +483,11 @@ public class Server : MonoBehaviour
 				{
 					setInitLog("Authenticated (" + username + ")");
 					// assign player to the guidtoaccountlist
+
+					// mark the player as active
+					setPlayerPlaymode(username, true);
 					this.playerIdList.Add(sender.networkView.owner.guid, username);
+
 					processDisplayPlay(sender);
 				} else
 				{
@@ -512,7 +563,9 @@ public class Server : MonoBehaviour
 		// remove player from guidtoaccountlist
 		if (playerIdList.ContainsKey(player.guid))
 		{
-			setInitLog("Cleared GUID to Account link for (" + player + ")");
+			string username = getUsernameFromNetworkPlayer(player);
+			setPlayerPlaymode(username,false);
+			setInitLog("Cleared GUID to Account link and set playmode false for (" + username + ")");
 			this.playerIdList.Remove(player.guid);
 		}
 		Network.RemoveRPCs(player);

@@ -62,7 +62,6 @@
      <None Include="Assets\Shaders\BackgroundAndCharacters\ReflectiveBackgroundArbitrary.shader" />
      <None Include="Assets\Shaders\BackgroundAndCharacters\ReflectiveBackgroundSelfIllumination.shader" />
      <None Include="Assets\users.xml" />
-     <None Include="Assets\gamexmldata.xml" />
      <None Include="Assets\Resources\HeightDepthOfField.shader" />
      <None Include="Assets\Resources\BlurPassesForDof.shader" />
      <None Include="Assets\Shaders\Fx\ScreenRefract.shader" />
@@ -86,7 +85,6 @@
      <None Include="Assets\Shaders\BackgroundAndCharacters\SuperSimpleSelfIllumination.shader" />
      <None Include="Assets\Shaders\Fx\ParticleBlend.shader" />
      <None Include="Assets\Shaders\Fx\InterlacePatternAdditive.shader" />
-     <None Include="Assets\universe.xml" />
  <Reference Include="UnityEditor.Graphs">
  <HintPath>D:\dev\unity4.3.4f1\Data\Managed\UnityEditor.Graphs.dll</HintPath>
  </Reference>

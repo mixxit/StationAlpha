@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 using System.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -35,6 +35,7 @@ public class Client : MonoBehaviour {
 	public Object player;
 	// Use this for initialization
 	void Start () {
+		ipaddress = PlayerPrefs.GetString ("serveraddress");
 		InitializeClient ();
 		audio = gameObject.AddComponent<AudioSource>();
 		musicsource = gameObject.AddComponent<AudioSource>();
@@ -56,15 +57,18 @@ public class Client : MonoBehaviour {
 	void OnGUI () {
 		if (playmode == false) 
 		{
-						GUI.skin = customSkin;
-						GUI.skin.button.wordWrap = true;
+			GUI.skin = customSkin;
+			GUI.skin.button.wordWrap = true;
 		
-						//GUI.DrawTexture (new Rect (0, 0, Screen.width, Screen.height), BgImgFile);
-						windRect = GUILayout.Window (0, windRect, None, "test");
+			//GUI.DrawTexture (new Rect (0, 0, Screen.width, Screen.height), BgImgFile);
+			windRect = GUILayout.Window (0, windRect, None, "test");
 		
-						if (popup) {
-								GUI.Window (1, new Rect ((Screen.width / 2) - 150, (Screen.height / 2) - 75, 300, 250), ShowPopup, popuptype);
-						}
+			if (popup) {
+				GUI.Window (1, new Rect ((Screen.width / 2) - 150, (Screen.height / 2) - 75, 300, 250), ShowPopup, popuptype);
+			}
+		} else {
+
+
 		}
 	}
 	void setInitLog(string log)
@@ -93,10 +97,18 @@ public class Client : MonoBehaviour {
 			case "showscreen":
 				showScreen(arg1, arg2);
 				break;
+			case "synccache":
+				syncCache(arg1,arg2);
+				break;
 			default:
 				setInitLog("ERROR_INVALIDCOMMAND: Received " + command + " request: (" + arg1 + ") (" + arg2 + ")");
 				break;
 		}
+	}
+
+	void syncCache(string playercache, string scenecache)
+	{
+
 	}
 	
 	void showScreen(string gui, string objectdata)
@@ -110,18 +122,21 @@ public class Client : MonoBehaviour {
 
 					string[] userinfo = objectdata.Split(',');
 					string username = userinfo[0]; 
-					string x = userinfo[1];
-					string y = userinfo[2];
-					string z = userinfo[3];
-					string s = userinfo[4];
-					string credits = userinfo[5];
-					string rank = userinfo[6];
-					
-					User userData = new User(username,password,x,y,z,s,credits,rank);
+					int x = int.Parse(userinfo[1]);
+					int y = int.Parse(userinfo[2]);
+					int z = int.Parse(userinfo[3]);
+					int s = int.Parse(userinfo[4]);
+					int credits = int.Parse(userinfo[5]);
+					int character = int.Parse(userinfo[6]);
+					int oxygen = int.Parse(userinfo[7]);
+					int health = int.Parse(userinfo[8]);
+					int food = int.Parse(userinfo[9]);
+					int drink = int.Parse(userinfo[10]);
+					int role = int.Parse(userinfo[11]);
+
+					User userData = new User(username,password,x,y,z,s,credits,character,oxygen,health,food,drink,role);
 					this.formUserCache = userData;
-					CloseLoginAndStartGame(username, int.Parse (rank));
-
-
+					CloseLoginAndStartGame(username);
 					break;
 				default:
 
@@ -131,13 +146,11 @@ public class Client : MonoBehaviour {
 		}
 	}
 
-	void CloseLoginAndStartGame(string username, int rank)
+	void CloseLoginAndStartGame(string username)
 	{
 		currentForm = null;
 		playmode = true;
-		networkObject.networkView.RPC ("syncState", RPCMode.All, playerPrefab.networkView.viewID, 1);
-
-		BroadcastMessage ("SetRank", rank);
+		BroadcastMessage ("SetCharacter", this.formUserCache.getCharacter());
 		BroadcastMessage ("BecomeDocile", false);
 		//SpawnPlayer ();
 
@@ -272,7 +285,6 @@ public class Client : MonoBehaviour {
 	{
 		setInitLog ("Initializing NetworkObject...");
 		networkObject = (GameObject)Network.Instantiate (networkObjectMaster,spawnPoint.transform.position, spawnPoint.transform.rotation, 0);
-		networkObject.networkView.RPC ("syncState", RPCMode.All, networkObject.networkView.viewID, 0);
 		BroadcastMessage ("BecomeDocile",true);
 	}
 	
