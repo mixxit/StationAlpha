@@ -90,17 +90,6 @@ public class User {
 		return this.playmode;
 	}
 
-	int viewid = 0;
-	public void setViewId(int viewid)
-	{
-		this.viewid = viewid;
-	}
-
-	public int getViewId()
-	{
-		return this.viewid;
-	}
-
 	public User(string username, 
 	            string password,
 	            int x,

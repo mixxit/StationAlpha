@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
@@ -7,18 +10,13 @@ public class Player : MonoBehaviour
 	public bool playMode = false;
 	private Server parent_server;
 	private Client parent_client;
-	private string type = "none";
+	public string type = "none";
 	private float timer = 0; // set duration time in seconds in the Inspector
 	private float ticklength = 3;
 	public string localName; // Holds the local player name
 	private Vector3 namePlatePos;
 	private GUIStyle namePlate = new GUIStyle();
-	public int character = 0;
-	public int oxygen = 0;
-	public int health = 0;
-	public int food = 0;
-	public int drink = 0;
-	public int role = 0;
+	private User userCache;
 
 	void Start ()
 	{
@@ -29,13 +27,6 @@ public class Player : MonoBehaviour
 		{
 			mr.enabled = false;
 		}
-	}
-
-	void SetCharacter(int character)
-	{
-		Debug.Log ("Setting character");
-		this.character = character;
-		localName = getNameFromCharacter (character);
 	}
 
 	// Update is called once per frame
@@ -60,11 +51,16 @@ public class Player : MonoBehaviour
 
 			// Client HUD
 			// Oxygen
-			GUILayout.Label ("Oxygen: " + oxygen);
-			GUILayout.Label ("Health: " + health);
-			GUILayout.Label ("Food: " + food);
-			GUILayout.Label ("Drink: " + drink);
-			GUILayout.Label ("Role: " + role);
+			if (this.userCache != null)
+			{
+				GUILayout.Label ("Oxygen: " + this.userCache.getOxygen());
+				GUILayout.Label ("Health: " + this.userCache.getHealth());
+				GUILayout.Label ("Food: " + this.userCache.getFood());
+				GUILayout.Label ("Drink: " + this.userCache.getDrink ());
+				GUILayout.Label ("Role: " + this.userCache.getRole ());
+				GUILayout.Label ("PlayMode: " + this.userCache.getPlayMode ());
+
+			}
 		}
 	}
 
@@ -114,6 +110,52 @@ public class Player : MonoBehaviour
 				// does not contain a sender as this is always from the server
 				parent_client.NetworkCmdReceiver(data);
 			}
+		}
+	}
+
+	[RPC]
+	void syncState(string data)
+	{
+		User userdata = (User)BFStringToObject (data);
+		Debug.Log ("Recieved syncState for user " + userdata.getUsername());
+		this.userCache = userdata;
+
+		if (this.playMode != userdata.getPlayMode())
+		{
+			this.playMode = userdata.getPlayMode();
+			if (this.playMode == true)
+			{
+				foreach (Renderer mr in GetComponentsInChildren<Renderer>())
+				{
+					mr.enabled = true;
+				}
+			} else {
+				foreach (Renderer mr in GetComponentsInChildren<Renderer>())
+				{
+					mr.enabled = false;
+				}
+			}
+		}
+	}
+
+
+	public string ObjectToBFString(object obj)
+	{
+		using (MemoryStream ms = new MemoryStream())
+		{
+			new BinaryFormatter().Serialize(ms, obj);         
+			return System.Convert.ToBase64String(ms.ToArray());
+		}
+	}
+	
+	public object BFStringToObject(string base64String)
+	{    
+		byte[] bytes = System.Convert.FromBase64String(base64String);
+		using (MemoryStream ms = new MemoryStream(bytes, 0, bytes.Length))
+		{
+			ms.Write(bytes, 0, bytes.Length);
+			ms.Position = 0;
+			return new BinaryFormatter().Deserialize(ms);
 		}
 	}
 	

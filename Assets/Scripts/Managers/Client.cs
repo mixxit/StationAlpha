@@ -134,8 +134,6 @@ public class Client : MonoBehaviour {
 					int drink = int.Parse(userinfo[10]);
 					int role = int.Parse(userinfo[11]);
 
-					User userData = new User(username,password,x,y,z,s,credits,character,oxygen,health,food,drink,role);
-					this.formUserCache = userData;
 					CloseLoginAndStartGame(username);
 					break;
 				default:
@@ -150,7 +148,6 @@ public class Client : MonoBehaviour {
 	{
 		currentForm = null;
 		playmode = true;
-		BroadcastMessage ("SetCharacter", this.formUserCache.getCharacter());
 		BroadcastMessage ("BecomeDocile", false);
 		//SpawnPlayer ();
 

@@ -32,8 +32,8 @@ public class Server : MonoBehaviour
 	void Start()
 	{
 		InitializeServer();
+
 	}
-	
 
 	void OnGUI()
 	{
@@ -103,23 +103,60 @@ public class Server : MonoBehaviour
 			count++;
 		}
 		//setInitLog(count + " tasks processed and removed");
-		//syncClientsCache();
+		syncClientsCache();
 		
+	}
+
+	public string ObjectToBFString(object obj)
+	{
+		using (MemoryStream ms = new MemoryStream())
+		{
+			new BinaryFormatter().Serialize(ms, obj);         
+			return System.Convert.ToBase64String(ms.ToArray());
+		}
+	}
+	
+	public object BFStringToObject(string base64String)
+	{    
+		byte[] bytes = System.Convert.FromBase64String(base64String);
+		using (MemoryStream ms = new MemoryStream(bytes, 0, bytes.Length))
+		{
+			ms.Write(bytes, 0, bytes.Length);
+			ms.Position = 0;
+			return new BinaryFormatter().Deserialize(ms);
+		}
 	}
 
 	void syncClientsCache()
 	{
-		foreach (NetworkPlayer np in Network.connections) 
+		Player[] players = FindObjectsOfType(typeof(Player)) as Player[];
+		foreach (Player player in players) 
 		{
-			if (playerIdList.ContainsKey (np.guid))
+			if (playerIdList.ContainsKey(player.networkView.owner.guid))
 			{
-				//todo
-				string usercache = "";
-				string scenecache = "";
-				//SendCmd (np, "synccache", usercache,scenecache);
+				string username = getUsernameFromGuid (player.networkView.owner.guid);
+				User user = getUserFromUsername(username);
+				User usertosend = new User(username,
+				                           "",
+				                           user.getX(),
+				                           user.getY(),
+				                           user.getZ(),
+				                           user.getS(),
+				                           user.getCredits(),
+				                           user.getCharacter(),
+				                           user.getOxygen(),
+				                           user.getHealth(),
+				                           user.getFood(),
+				                           user.getDrink(),
+				                           user.getRole()
+				                           );
+				usertosend.setPlaymode(user.getPlayMode());
+				string data = ObjectToBFString(usertosend);
+				player.networkView.RPC ("syncState", RPCMode.Others, data);
 			}
 		}
 	}
+
 
 	void processTask(Task task)
 	{
@@ -532,7 +569,6 @@ public class Server : MonoBehaviour
 	{   
 		setInitLog("Initializing NetworkObject...");
 		networkObject = (GameObject)Network.Instantiate(networkObjectMaster, spawnPoint.transform.position, spawnPoint.transform.rotation, 0);
-		networkObject.networkView.RPC ("syncState", RPCMode.All, networkObject.networkView.viewID, 0);
 		BroadcastMessage ("BecomeDocile", true);
 	}
 	
