@@ -24,7 +24,7 @@ public class Client : MonoBehaviour {
 	Rect windRect;
 	public GUISkin customSkin;
 	public string ipaddress = "127.0.0.1";
-	public int port = 25000;
+	private int port = 25005;
 	public AudioClip sound;
 	public AudioClip music;
 	public AudioSource audio;
@@ -33,6 +33,7 @@ public class Client : MonoBehaviour {
 	public GameObject playerPrefab;
 	public GameObject spawnPoint;
 	public Object player;
+
 	// Use this for initialization
 	void Start () {
 		ipaddress = PlayerPrefs.GetString ("serveraddress");
@@ -307,7 +308,6 @@ public class Client : MonoBehaviour {
 	
 	void InitializeClient()
 	{
-		//Network.SetLevelPrefix (networkversion);
 		setInitLog ("Connecting to server...");
 		Network.Connect (ipaddress, port);
 		

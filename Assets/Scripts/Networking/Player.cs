@@ -57,8 +57,8 @@ public class Player : MonoBehaviour
 				GUILayout.Label ("Health: " + this.userCache.getHealth());
 				GUILayout.Label ("Food: " + this.userCache.getFood());
 				GUILayout.Label ("Drink: " + this.userCache.getDrink ());
-				GUILayout.Label ("Role: " + this.userCache.getRole ());
-				GUILayout.Label ("PlayMode: " + this.userCache.getPlayMode ());
+				GUILayout.Label ("Role: " + getRoleNameFromRoleID(this.userCache.getRole ()));
+				//GUILayout.Label ("PlayMode: " + this.userCache.getPlayMode ());
 
 			}
 		}
@@ -163,6 +163,45 @@ public class Player : MonoBehaviour
 	void InitLogMessage(string message)
 	{
 		SendMessageUpwards ("NetworkObjectMessage", message, SendMessageOptions.RequireReceiver);
+	}
+
+	private string getRoleNameFromRoleID(int role)
+	{
+		switch (role) 
+		{
+			case 0:
+				return "civilian";
+			case 1:
+				return "security officer";
+			case 2:
+				return "doctor";
+			case 3:
+				return "scientist";
+			case 4:
+				return "engineer";
+			case 5:
+				return "pilot";
+			case 6:
+				return "technician";
+			case 7:
+				return "overseer";
+			case 8:
+				return "psychiatrist";
+			case 9:
+				return "communications officer";
+			case 10:
+				return "chef";
+			case 11:
+				return "cleaner";
+			case 12:
+				return "administrator";
+			case 13:
+				return "musician";
+			case 14:
+				return "journalist";
+			default:
+				return "civilian";
+		}
 	}
 
 	private string getNameFromCharacter(int character)

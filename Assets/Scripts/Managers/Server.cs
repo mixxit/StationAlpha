@@ -11,9 +11,10 @@ public class Server : MonoBehaviour
 	public GameObject networkObjectMaster;
 	public GameObject networkObject;
 	public Vector2 scrollPosition;
-	public int networkversion;
 	private string initLog = "Initializing...";
 	public int oxygen = 100;
+	public int version = 0;
+	public string gameName = "AstroWorld";
 
 	public GameObject spawnPoint;
 
@@ -574,11 +575,13 @@ public class Server : MonoBehaviour
 	
 	void InitializeServer()
 	{
+		MasterServer.ipAddress = "play.fallofanempire.com";
+		MasterServer.port = 23466;
+
 		setInitLog("Starting Server...");
 		//Network.SetLevelPrefix (networkversion);
-		bool useNat = !Network.HavePublicAddress();
-		
-		Network.InitializeServer(maxonlineplayers, 25000, useNat);
+		Network.InitializeServer(maxonlineplayers, 25005, false);
+		MasterServer.RegisterHost(gameName+version, "AstroWorld Version "+version, "AstroWorld public server");
 		LoadFromXml();
 		InitalizeNetworkObject();
 	}
